@@ -2,9 +2,6 @@ version: '3.8'
 
 services:
   rabbitholes:
-    build:
-      context: .
-      dockerfile: Dockerfile
     environment:
       - SERVICE_FQDN_RABBITHOLES=/api
       - REACT_APP_API_URL=$SERVICE_FQDN_RABBITHOLES
@@ -13,7 +10,6 @@ services:
       # Add your API keys here or use a .env file
       - TAVILY_API_KEY=${TAVILY_API_KEY}
       - GOOGLE_AI_API_KEY=${GOOGLE_AI_API_KEY}
-
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 30s

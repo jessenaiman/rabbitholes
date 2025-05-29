@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   rabbitholes:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     environment:
@@ -9,21 +9,23 @@ services:
       - NODE_ENV=production
       - TAVILY_API_KEY=${TAVILY_API_KEY}
       - GOOGLE_AI_API_KEY=${GOOGLE_AI_API_KEY}
-      # Coolify auto-populates these:
-      - SERVICE_URL
-      - SERVICE_FQDN
-      - SERVICE_PORT=3000
-      # React needs this transformed:
-      - REACT_APP_API_URL=${SERVICE_URL}/api
-    networks:
-      - coolify-network
+      # Use Coolify's standard FQDN variable format
+      - SERVICE_FQDN=/  # [1]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    # Add Coolify identification labels [1]
+    labels:
+      - coolify.managed=true
+      - coolify.service=rabbitholes
+    # Connect to Coolify's network [1]
+    networks:
+      - coolify-network
 
+# Required network configuration [1]
 networks:
   coolify-network:
     external: true

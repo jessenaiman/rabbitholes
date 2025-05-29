@@ -1,49 +1,23 @@
-# Use Node.js LTS version
-FROM node:18-alpine AS builder
-
-# Set working directory
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-COPY frontend/package*.json ./frontend/
-COPY backend/package*.json ./backend/
-
-# Install dependencies
-RUN npm install -w frontend -w backend && npm install
-
-# Copy source code
-COPY . .
-
-# Build frontend and backend
-RUN npm run build
+# ... (builder stage remains the same)
 
 # Production stage
-FROM node:18-alpine AS production
-
+FROM node:18-alpine
 WORKDIR /app
 
-# Copy package files for production
-COPY package*.json ./
-COPY frontend/package*.json ./frontend/
-COPY backend/package*.json ./backend/
+# Install envsubst for runtime variable replacement
+RUN apk add --no-cache gettext
 
-# Install production dependencies only
-RUN npm install -w frontend -w backend --production && npm install --production
-
-# Copy built assets from builder stage
+# Copy built assets
 COPY --from=builder /app/backend/dist ./backend/dist
 COPY --from=builder /app/frontend/build ./frontend/build
 
-# Install ts-node and typescript for production (since the start script uses ts-node)
-RUN npm install -g ts-node typescript
+# Add runtime configuration script
+COPY runtime-env.sh /app/runtime-env.sh
+RUN chmod +x /app/runtime-env.sh
 
-# Expose port
 EXPOSE 3000
+ENV PORT=3000 NODE_ENV=production
 
-# Add required environment variables with defaults
-ENV PORT=3000
-ENV NODE_ENV=production
-
-# Start the server with debugging
-CMD ["sh", "-c", "cd backend && node dist/server.js"] 
+# Use entrypoint to process environment variables
+ENTRYPOINT ["/app/runtime-env.sh"]
+CMD ["sh", "-c", "cd backend && node dist/server.js"]

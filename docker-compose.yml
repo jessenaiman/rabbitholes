@@ -5,8 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
     environment:
       - SERVICE_FQDN_RABBITHOLES=/api
       - REACT_APP_API_URL=$SERVICE_FQDN_RABBITHOLES

@@ -1,25 +1,20 @@
-version: '3.8'  # specify a version
-
+version: '3.8'
 services:
-  app:
-    build:
+  rabbitholes:
+    build: 
       context: .
       dockerfile: Dockerfile
-    # We don't need to publish the port in the same way because Coolify uses a reverse proxy?
-    # But we do need to expose the port to the internal network. The mapping is still needed for the proxy to route.
-    ports:
-      - "3000:3000"
     environment:
       - PORT=3000
       - NODE_ENV=production
-      # We will set these in Coolify's environment variables
       - TAVILY_API_KEY=${TAVILY_API_KEY}
       - GOOGLE_AI_API_KEY=${GOOGLE_AI_API_KEY}
-      # This environment variable will be set by Coolify when a domain is assigned
-      - SERVICE_FQDN_APP_3000
+      - SERVICE_FQDN_RABBITHOLES_3000  # Coolify auto-injects domain here
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    # Coolify handles ports via reverse proxy - no need to publish
+    # Volumes not required for static builds

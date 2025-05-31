@@ -1,11 +1,8 @@
-version: '3.8'
-
 services:
   rabbitholes:
     environment:
-      - SERVICE_FQDN_RABBITHOLES=/api
-      - REACT_APP_API_URL=$SERVICE_FQDN_RABBITHOLES
       - SERVICE_FQDN_RABBITHOLES_3000
+      - REACT_APP_API_URL=$SERVICE_FQDN_RABBITHOLES
       - NODE_ENV=production
       # Add your API keys here or use a .env file
       - TAVILY_API_KEY=${TAVILY_API_KEY}

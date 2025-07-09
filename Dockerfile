@@ -39,10 +39,10 @@ COPY --from=builder /app/frontend/build ./frontend/build
 RUN npm install -g ts-node typescript
 
 # Expose port
-EXPOSE 3000
+EXPOSE 3001
 
 # Add required environment variables with defaults
-ENV PORT=3000
+ENV PORT=${PORT:-3000}
 ENV NODE_ENV=production
 
 # Start the server with debugging

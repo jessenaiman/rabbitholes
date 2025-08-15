@@ -1,14 +1,12 @@
 version: '3.8'
 
 services:
-  rabbitholes-app:
+  rabbitholes:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "3009:3000"
     environment:
-      - PORT=3009
+      - SERVICE_FQDN_RABBITHOLES_3009
       - NODE_ENV=production
       # Add your API keys here or use a .env file
       - TAVILY_API_KEY=${TAVILY_API_KEY}
